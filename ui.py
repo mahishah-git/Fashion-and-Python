@@ -115,13 +115,41 @@ def _read_image(path):
     return ""
 
 
+# Photos are searched for in the repo root first (next to app.py), then in assets/.
+IMAGE_FOLDERS = [BASE_DIR, ASSETS_DIR / "clothing", ASSETS_DIR]
+
+
+def _normal(text):
+    """'Silk Crepe_Blouse.JPG' -> 'silk-crepe-blouse' so file names are forgiving."""
+    return Path(str(text)).stem.lower().replace(" ", "-").replace("_", "-")
+
+
+def find_image(name):
+    """Data URI for a photo called `name` (any of jpg/jpeg/png/webp, any capitalisation),
+    or '' if no such file exists."""
+    wanted = _normal(name)
+    if not wanted:
+        return ""
+    for folder in IMAGE_FOLDERS:
+        try:
+            files = sorted(folder.iterdir())
+        except OSError:
+            continue
+        for path in files:
+            if path.is_file() and path.suffix.lower() in IMAGE_MIME and _normal(path.name) == wanted:
+                found = _read_image(path)
+                if found:
+                    return found
+    return ""
+
+
 def item_image_uri(item):
-    """Uploaded photo, then assets/clothing/<file>, then a drawn silhouette."""
+    """Uploaded photo, then a repo photo named after the item, then a drawn silhouette."""
     image = item.get("image") or ""
     if image.startswith("data:"):
         return image
     if image:
-        found = _read_image(ASSETS_DIR / "clothing" / Path(image).name)
+        found = find_image(image)
         if found:
             return found
     return garment_svg(item.get("category"), hex_for(item.get("color")))
@@ -138,8 +166,8 @@ def uploaded_to_data_uri(upload):
 
 
 def cover_uri():
-    """assets/cover.jpg if present, otherwise a generated editorial cover."""
-    found = _read_image(ASSETS_DIR / "cover.jpg")
+    """cover.jpg (repo root or assets/) if present, otherwise a generated cover."""
+    found = find_image("cover")
     if found:
         return found
     dress = GARMENTS["Dresses"].replace("FILL", "#F7F4EE")
