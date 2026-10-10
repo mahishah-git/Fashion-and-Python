@@ -84,8 +84,8 @@ def render():
                 st.session_state[key] = 0  # the piece was deleted or re-categorised
             st.selectbox(label, options, key=key,
                          format_func=lambda value, names=names: "None" if value == 0 else names.get(value, "Unknown"))
-        b1, b2, b3 = st.columns(3)
-        b1.button("Style Shuffle", key="shuffle", type="primary", on_click=_shuffle, use_container_width=True)
+        st.button("Style Shuffle", key="shuffle", type="primary", on_click=_shuffle, use_container_width=True)
+        b2, b3 = st.columns(2)
         b2.button("Save outfit", key="save", on_click=_save, use_container_width=True)
         b3.button("Reset", key="reset", on_click=_reset, use_container_width=True)
 
