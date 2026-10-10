@@ -22,13 +22,8 @@ def _signature_colour(items):
 
 
 def _collage(items):
-    small = ""
-    for position, category in (("a", "Outerwear"), ("b", "Shoes")):
-        piece = _first([i for i in items if i["category"] == category], category)
-        if piece:
-            small += f'<div class="fp-collage-{position}"><img src="{ui.item_image_uri(piece)}" alt=""/></div>'
     return ('<div class="fp-collage"><div class="fp-collage-main">'
-            f'<img src="{ui.cover_uri()}" alt="Editorial cover"/></div>{small}</div>')
+            f'<img src="{ui.cover_uri()}" alt="Editorial cover"/></div></div>')
 
 
 def render():
