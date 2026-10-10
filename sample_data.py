@@ -32,8 +32,9 @@ PALETTE = {
 
 
 def _item(item_id, name, category, color, season, occasion, price):
-    """Build one clothing record. An empty image means 'draw the default
-    silhouette'; a filename means 'use assets/clothing/<filename>'."""
+    """Build one clothing record. 'image' is the photo's file name without the
+    extension, e.g. 'Silk Crepe Blouse' -> silk-crepe-blouse (.jpg/.png/.webp).
+    If no such photo exists in the repo, the app draws a silhouette instead."""
     return {
         "id": item_id,
         "name": name,
@@ -42,7 +43,7 @@ def _item(item_id, name, category, color, season, occasion, price):
         "season": season,
         "occasion": occasion,
         "price": price,
-        "image": "",
+        "image": name.lower().replace(" ", "-"),
     }
 
 
